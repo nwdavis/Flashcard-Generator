@@ -11,7 +11,7 @@ module.exports = function(front, back) {
     }
 }
 
-//how would you add a prototype to an unnamed function like this one?
+
 
 
 
