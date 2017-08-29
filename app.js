@@ -1,6 +1,7 @@
 //requiring the constructor files
 var basicFC = require("./BasicCard.js");
 var clozeFC = require("./ClozeCard.js");
+var inquirer = require("inquirer");
 
 //questions in basic format
 var basicQuestions = [
@@ -30,11 +31,99 @@ var basicExample = new basicFC(basicQuestions[0], answers[0])
 var clozeExample = new clozeFC(clozeQuestions[2], answers[2])
 
 //printing out examples to the console
-console.log(`--------------------`);
-basicExample.printFront();
-basicExample.printBack();
-console.log(`--------------------`);
-console.log(`--------------------`);
-clozeExample.printPartial();
-clozeExample.printFullText();
-console.log(`--------------------`);
+function start(){
+
+  inquirer.prompt([
+    {
+      name: "action",
+      choices: ["Use Existing Cards", "Make New Cards"]
+      message: "Welcome to Flashy Cards. What would you like to do?"
+    }
+  ]).then(function(answer){
+    if (answer.action === "Use Existing Cards"){
+      inquirer.prompt([
+        {
+          name: "clozeOrBasic",
+          choices: ["Cloze", "Basic"],
+          message: "What type of card do you want to use?"
+        }
+      ]).then(function(answer){
+        if (answer.clozeOrBasic === "Cloze"){
+          printClozeCards();
+        } else if (answer.clozeOrBasic === "Basic"){
+          printBasicCards();
+        }
+      });      
+    } else if (answer.action === "Make New Cards"){
+      inquirer.prompt([
+        {
+          name: "cardChoice",
+          choices: ["Basic", "Cloze"],
+          message: "What type of card do you want to create?"
+        }
+      ]).then(function(answer){
+        if (answer.cardChoice === "Basic"){
+          basic();
+        } else if (answer.cardChoice === "Cloze"){
+          cloze();
+        }
+      });
+    }  
+  });
+    
+
+  function basic(){
+    inquirer.prompt([
+      {
+        name: "question",
+        type: "input",
+        message: "Enter the question."
+      },
+      {
+        name: "answer",
+        type: "input",
+        message: "Enter the answer."
+      }
+    ]).then(function(answer){
+      basicQuestions.push(answer.question);
+      answers.push(answer.answer);
+      start();
+    });
+  };
+};
+
+function cloze(){
+  inquirer.prompt([
+    {
+      name: "question",
+      type: "input",
+      message: "Enter the question."
+    },
+    {
+      name: "answer",
+      type: "input",
+      message: "Enter the answer."
+    }
+  ]).then(function(answer){
+    clozeQuestions.push(answer.question);
+    answers.push(answer.answer);
+    start();
+  });
+};
+  
+
+
+function printBasicCards(){
+  inquirer.prompt([
+    {
+      name: "questions",
+      choices: [basicQuestions.forEach(function(question){})],
+      message: "Select a question to see the answer."
+    }
+  ]).then(function(answer){
+    console.log(answers[basicQuestions.indexOf(answer)]);
+  });
+};
+
+
+start();
